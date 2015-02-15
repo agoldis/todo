@@ -1,7 +1,16 @@
-body {
-    font-family: Arial;
+.hidden { 
+    display: none;
 }
 
-h1 {
-    color: blue;
+.completed {
+    text-decoration: line-through;
+    color: grey;
+}
+
+#app-items-list ul {
+    list-style: none;
+}
+
+.active {
+    color: red;
 }
