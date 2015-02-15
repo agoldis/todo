@@ -1,0 +1,12 @@
+{
+	"name" : "todo-app-backend",
+	"description" : "ToDo App backend",
+	"dependencies" : {
+		"express" : "4.2.x",
+		"mongoose" : "latest"
+	},
+	"repository"  : {
+		"type" : "git",
+		"url" : "https://github.com/agoldis/todo.git"
+	}
+}
