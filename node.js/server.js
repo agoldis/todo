@@ -1,14 +1,52 @@
 // reference the http module so we can create a webserver
-var http = require("http");
+var express= require("express");
+var bodyParser = require("body-parser");
+var path = require("path");
+var mng = require("mongoose");
+var logger = require("morgan");
 
-// create a server
-http.createServer(function(req, res) {
-    // on every request, we'll output 'Hello world'
-    res.end("Hello world from Cloud9!");
-}).listen(process.env.PORT, process.env.IP);
 
-// Note: when spawning a server on Cloud9 IDE, 
-// listen on the process.env.PORT and process.env.IP environment variables
 
-// Click the 'Run' button at the top to start your server,
-// then click the URL that is emitted to the Output tab of the console
+
+var initDb = function () {
+	var todoSchema = mng.Schema({
+		title: String,
+		completed: Boolean
+	});
+	var Todo = mng.model('Todo', todoSchema);
+};
+
+// mng.connect(process.env.MONGO_CONNECTION);
+// var db = mng.connection;
+
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', function () {s
+// 	console.log('Successfully connected to DB');
+// 	initDb();
+// });
+
+
+console.log("Creating HTTP server on " + process.env.IP + ", port " + process.env.PORT);
+
+
+var app = express()
+// app.use(bodyParser)
+app.use(logger('dev'))
+app.use(bodyParser.urlencoded({extended: true}))
+
+
+app.get('/', function (req, res) {
+  res.send('TodoApp API is running');
+});
+app.param('collectionName', function (req,res,next,collectionName) {
+	req.collection = [{title: 'item1', completed: false}, { title: 'item2', completed: false }];
+	next();
+})
+
+app.get('/collections/:collectionName', function (req, res, next) {
+	res.send(req.collection)
+})
+
+
+
+app.listen(process.env.PORT);

@@ -3,7 +3,9 @@
 	"description" : "ToDo App backend",
 	"dependencies" : {
 		"express" : "4.2.x",
-		"mongoose" : "latest"
+		"mongoose" : "latest",
+		"body-parser" : "1.0.2",
+		"morgan" : "latest"
 	},
 	"repository"  : {
 		"type" : "git",
