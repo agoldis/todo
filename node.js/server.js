@@ -2,51 +2,69 @@
 var express= require("express");
 var bodyParser = require("body-parser");
 var path = require("path");
-var mng = require("mongoose");
 var logger = require("morgan");
+var db = require("./mongo.js")
 
 
-
-
-var initDb = function () {
-	var todoSchema = mng.Schema({
-		title: String,
-		completed: Boolean
-	});
-	var Todo = mng.model('Todo', todoSchema);
-};
-
-// mng.connect(process.env.MONGO_CONNECTION);
-// var db = mng.connection;
-
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function () {s
-// 	console.log('Successfully connected to DB');
-// 	initDb();
-// });
-
-
-console.log("Creating HTTP server on " + process.env.IP + ", port " + process.env.PORT);
-
+var m = new db(process.env.MONGO_CONNECTION)
 
 var app = express()
-// app.use(bodyParser)
 app.use(logger('dev'))
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 
 app.get('/', function (req, res) {
   res.send('TodoApp API is running');
 });
+
 app.param('collectionName', function (req,res,next,collectionName) {
-	req.collection = [{title: 'item1', completed: false}, { title: 'item2', completed: false }];
-	next();
+	m.getItems(function (items) {
+		req.collection = items
+		next()
+	})
 })
 
-app.get('/collections/:collectionName', function (req, res, next) {
-	res.send(req.collection)
+app.get('/collections/:collectionName', function (req, res) {res.send(req.collection)})
+
+
+app.post('/collections/:collectionName', function (req, res) {
+	console.log("Received new data for collection '%s'", req.params.collectionName)
+	m.createItems(req.body, function () {
+		res.send("New collection received");	
+	})
+})
+
+app.get('/collections/:collectionName/:itemid', function (req,res) {
+	console.log("Requested item " + req.params.itemid + " from collection " + req.params.collectionName)
+	var id = parseInt(req.params.itemid)
+	var item
+	for (var i = 0; i < req.collection.length; i++) {
+		if (id === req.collection[i].id) {
+			item = req.collection[i]
+		}
+	} 
+	res.send(item)
+})
+
+app.put('/collections/:collectionName/:itemid', function (req,res) {
+	console.log("Updating item %s from collection '%s'", req.params.itemid, req.params.collectionName)
+	m.setItem(req.params.itemid, req.body, function () {
+		res.send("Updated item " + req.params.itemid)
+	})
+})
+
+app.delete('/collections/:collectionName/:itemid', function (req,res) {
+	console.log("Deleting item %s from collection '%s'", req.params.itemid , req.params.collectionName)
+	m.deleteItem(req.params.itemid, function () { 
+			res.send("Deleted item " + req.params.itemid + " from collection ")
+	})
 })
 
 
+// connect to Mongo and then launch HTTP server
 
-app.listen(process.env.PORT);
+m.on('connected', function () {
+	console.log("Creating HTTP server on %s port %s",process.env.IP ,process.env.PORT);
+	app.listen(process.env.PORT);
+})
