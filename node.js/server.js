@@ -13,10 +13,8 @@ app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
-
-app.get('/', function (req, res) {
-  res.send('TodoApp API is running');
-});
+console.log(__dirname);
+app.use(express.static(__dirname + '/../html'));
 
 app.param('collectionName', function (req,res,next,collectionName) {
 	m.getItems(function (items) {
@@ -33,18 +31,6 @@ app.post('/collections/:collectionName', function (req, res) {
 	m.createItems(req.body, function () {
 		res.send("New collection received");	
 	})
-})
-
-app.get('/collections/:collectionName/:itemid', function (req,res) {
-	console.log("Requested item " + req.params.itemid + " from collection " + req.params.collectionName)
-	var id = parseInt(req.params.itemid)
-	var item
-	for (var i = 0; i < req.collection.length; i++) {
-		if (id === req.collection[i].id) {
-			item = req.collection[i]
-		}
-	} 
-	res.send(item)
 })
 
 app.put('/collections/:collectionName/:itemid', function (req,res) {
@@ -64,7 +50,7 @@ app.delete('/collections/:collectionName/:itemid', function (req,res) {
 
 // connect to Mongo and then launch HTTP server
 
-m.on('connected', function () {
+m.once('connected', function () {
 	console.log("Creating HTTP server on %s port %s",process.env.IP ,process.env.PORT);
 	app.listen(process.env.PORT);
 })

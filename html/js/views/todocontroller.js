@@ -1,63 +1,44 @@
 var ns = ns || {};
-(function($) {
+(function ($) {
     ns.TodoControllerView = Backbone.View.extend({
     
     template: _.template($('#app-ctrl-tpl').html()),
-
+    initialize: function () {
+        this.statusView = new ns.TodoStatusView();
+        this.render();
+    },
     events: {
       'click #item-add': 'addItem',
       'click #clear-completed' : 'removeCompleted',
-      'keypress #item-title-input' : 'addOnEnter',
-      'click #show-incompleted' : 'showIncompleted',
-      'click #show-completed' : 'showCompleted',
-      'click #show-all' : 'showAll',
+      'keypress #item-title-input' : 'addOnEnter'
     },
     addOnEnter: function (e) {
-      this.$('#item-title-input').removeClass('invalid');
+      this.$('#item-title-input').parent().removeClass('has-error');
       if (e.which === ENTER_KEY && this.$('#item-title-input').val().trim()) 
 		this.addItem(e);
     },
-    addItem: function (e) {
+    addItem: function () {
         var item = new ns.TodoItem({title: this.$('#item-title-input').val().trim()}); 
-        if (item.isValid())
-            ns.collection.add(item) 
+        if (item.isValid()) {
+            ns.collection.create(item)
+        }
         else
             this.showInvalid();
         this.$('#item-title-input').val('')
     },
-    removeCompleted: function (e) {
+    removeCompleted: function () {
         var completed = ns.collection.where({ completed: true });
-        ns.collection.remove(completed);
         completed.map( function (item) {
-            item.destroy();    
+            item.destroy();
         });
-    },
-    showAll: function (e) {
-        ns.filter = "";
-        ns.collection.trigger('filter');
-        this.clearActive();
-        $("#show-all").addClass('active');
-    },
-    showCompleted: function () {
-        ns.filter = "completed";
-        ns.collection.trigger('filter');
-        this.clearActive();
-        $("#show-completed").addClass('active');
-    },
-    showIncompleted: function () {
-        ns.filter = "incompleted";
-        ns.collection.trigger('filter');
-        this.clearActive();
-        $("#show-incompleted").addClass('active');
-    },
-    clearActive: function () {
-        this.$el.find('.active').removeClass('active');
+        ns.collection.remove(completed);
     },
     showInvalid: function() {
-        this.$('#item-title-input').addClass('invalid');
+        this.$('#item-title-input').parent().addClass('has-error');
     },
     render: function () {
-        this.$el.html(this.template);
+        this.$el.html(this.template());
+        this.$el.append(this.statusView.$el);
         return this;
     },
 });

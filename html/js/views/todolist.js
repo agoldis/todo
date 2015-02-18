@@ -13,16 +13,7 @@ var ns = ns || {};
             this.$el.append( itemView.render().el );
         }, this); 
         return this;
-    },
-    showAll: function () {
-        
-    },
-    showCompleted: function () {
-        
-    },
-    showNotCompleted: function () {
-        
-    },
+    }
 });
     
 })(jQuery)

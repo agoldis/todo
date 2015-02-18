@@ -4,18 +4,15 @@ var ns = ns || {};
 ns.TodoAppView = Backbone.View.extend({
     
     layoutTpl: _.template($('#app-layout-tpl').html()),
-    
+    initialize: function () {
+        this.ctrl = new ns.TodoControllerView();
+        this.list = new ns.TodoListView();
+    },
     render: function () {
         this.$el.html(this.layoutTpl());
-        
-        var ctrl = new ns.TodoControllerView({el: $('#app-ctrl')});
-        ctrl.render();
-        
-        var status = new ns.TodoStatusView({ el: $('#app-status')})
-        status.render();
-        var list = new ns.TodoListView();
-        $('#app-items-list').html(list.$el);
-        
+        $('#app-ctrl').html(this.ctrl.$el)   
+        $('#app-items-list').html(this.list.$el);
+
         return this;
     }
 });
