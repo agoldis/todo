@@ -26,22 +26,19 @@ ns.TodoStatusView = Backbone.View.extend({
         };
     },
     showAll: function () {
-        ns.filter = "";
-        ns.collection.trigger('filter');
+        ns.collection.trigger('filter', "");
         this.clearActive();
         $("#show-all").addClass('active btn-info');
         this.lastSelected = '#show-all';
     },
     showCompleted: function () {
-        ns.filter = "completed";
-        ns.collection.trigger('filter');
+        ns.collection.trigger('filter', "completed");
         this.clearActive();
         $("#show-completed").addClass('active btn-info');
         this.lastSelected = '#show-completed';
     },
     showIncompleted: function () {
-        ns.filter = "incompleted";
-        ns.collection.trigger('filter');
+        ns.collection.trigger('filter', "incompleted");
         this.clearActive();
         $("#show-incompleted").addClass('active btn-info');
         this.lastSelected = '#show-incompleted';

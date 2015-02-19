@@ -4,7 +4,8 @@ var ns = ns || {};
 ns.TodoItem = Backbone.Model.extend({
    defaults: {
        title: '',
-       completed: false
+       completed: false,
+       hidden: false
    },
    idAttribute: '_id',
    toggle: function () {

@@ -4,7 +4,6 @@ var ns = ns || {};
 
 $(function () {
 
-	ns.filter = '';
 	ns.app = new ns.TodoAppView({ el: $("#app") });
 	ns.app.render();
 });
