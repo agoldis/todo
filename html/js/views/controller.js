@@ -8,6 +8,7 @@ ns.Views.Controller = Backbone.View.extend({
     events: {
       'click #item-add': 'addItem',
       'click #clear-completed' : 'removeCompleted',
+      'click #complete-all' : 'completeAll',
       'keypress #item-title-input' : 'addOnEnter'
     },
     addOnEnter: function (e) {
@@ -25,14 +26,20 @@ ns.Views.Controller = Backbone.View.extend({
         this.$('#item-title-input').val('')
     },
     removeCompleted: function () {
+
         var completed = this.collection.where({ completed: true });
         completed.map( function (item) {
-            console.log('going to destroy')
-            item.destroy({wait:true});
+            console.log('going to destroy %s', item.get('title'))
+            item.destroy();
         });
-        // this.collection.remove(completed);
     },
-    showInvalid: function() {
+    completeAll: function () {
+        this.collection.map(function (item) {
+            item.set('completed', true)
+            item.save();
+        })
+    },
+    showInvalid: function () {
         this.$('#item-title-input').parent().addClass('has-error');
     },
     render: function () {

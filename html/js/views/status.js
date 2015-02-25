@@ -10,10 +10,10 @@ ns.Views.Status = Backbone.View.extend({
       'click #show-all' : 'showAll'
     },
     initialize: function () {
+        this.lastSelected = '#show-all';
         this.listenTo(this.collection, 'add', this.render);
         this.listenTo(this.collection, 'remove', this.render);
-        this.listenTo(this.collection, 'change:completed', this.render);
-        this.lastSelected = '#show-all';
+        this.listenTo(this.collection, 'change:completed', this.activateFilter);
     },
     getStatus: function () {
         var overall = this.collection.length;
@@ -25,29 +25,32 @@ ns.Views.Status = Backbone.View.extend({
           'others' : others
         };
     },
+    activateFilter: function () {
+        $(this.lastSelected).click()
+        this.render()
+    },
     showAll: function (e) {
+        this.highlightButton(e);  
         this.collection.each( function (item) {
             item.set('isHidden', false);
         })
-        this.highlightButton(e);  
     },
     showCompleted: function (e) {
-        console.log('show completed')
+        this.highlightButton(e);  
         this.collection.each(function (item) {
             item.set('isHidden' , !item.get('completed'))
         })
-        this.highlightButton(e);  
     },
     showIncompleted: function (e) {
+        this.highlightButton(e);  
         this.collection.each(function (item) {
             item.set('isHidden', item.get('completed'))
         })
-        this.highlightButton(e);  
     },
     highlightButton: function(e) {
         this.$el.find('.active').removeClass('active').removeClass('btn-info');
         $(e.target).addClass('active btn-info');
-        this.lastSelected =  e.target;
+        this.lastSelected =  '#' + $(e.target).attr('id');
     },
     render: function () {
         this.$el.html(this.template(this.getStatus()));

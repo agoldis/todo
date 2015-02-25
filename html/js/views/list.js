@@ -18,7 +18,8 @@ ns.Views.List = Backbone.View.extend({
     removeItem: function (item) {
         this.itemViews.forEach ( function (view) {
             if (view.model === item) {
-                console.log('Removing %s view', item)
+                console.log('Removing %s view', item.get('title'))
+                view.remove()
             }
         })
         // remove view

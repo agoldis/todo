@@ -28,22 +28,22 @@ app.get('/collections/:collectionName', function (req, res) {res.send(req.collec
 
 app.post('/collections/:collectionName', function (req, res) {
 	console.log("Received new data for collection '%s'", req.params.collectionName)
-	m.createItems(req.body, function () {
-		res.send("New collection received");	
+	m.createItems(req.body, function (items) {
+		res.send(items);	
 	})
 })
 
 app.put('/collections/:collectionName/:itemid', function (req,res) {
 	console.log("Updating item %s from collection '%s'", req.params.itemid, req.params.collectionName)
 	m.setItem(req.params.itemid, req.body, function () {
-		res.send("Updated item " + req.params.itemid)
+		res.send(req.body)
 	})
 })
 
 app.delete('/collections/:collectionName/:itemid', function (req,res) {
 	console.log("Deleting item %s from collection '%s'", req.params.itemid , req.params.collectionName)
 	m.deleteItem(req.params.itemid, function () { 
-			res.send("Deleted item " + req.params.itemid + " from collection ")
+			res.send(req.params.itemid)
 	})
 })
 

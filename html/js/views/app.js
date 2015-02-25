@@ -12,7 +12,7 @@ ns.Views.App = Backbone.View.extend({
         (new ns.Views.Controller({el: '#app-ctrl', collection: this.collection}))
             .render()
             .$el
-            .append((new ns.Views.Status({collection: this.collection}).render().el))
+            .append((new ns.Views.Status({collection: this.collection}).el))
 
         $("#app-items-list").html( (new ns.Views.List({collection: this.collection})).el)
 

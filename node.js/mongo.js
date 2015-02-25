@@ -14,9 +14,9 @@ var DB = function (connectionString) {
 	var obj = this; // to use in callbacks
 
 	this.createItems = function (items, callback) {
-		this.TodoItemModel.create(items, function(err) {
+		this.TodoItemModel.create(items, function(err,items) {
 			if (err) console.error(err)
-			callback()
+			callback(items)
 		});
 
 	}
@@ -30,14 +30,14 @@ var DB = function (connectionString) {
 
 	this.setItem = function (id,item,callback) {
 		if (item._id) delete item._id;
-		this.TodoItemModel.findOneAndUpdate({ '_id': id}, item, function(res) {
+		this.TodoItemModel.findOneAndUpdate({ '_id': id}, item, function(err,item) {
 			// TODO: what if item do not exist
 			callback()
 		})
 	}
 
 	this.deleteItem = function (id,callback) {
-		this.TodoItemModel.findOneAndRemove({'_id': id}, function (res) {
+		this.TodoItemModel.findOneAndRemove({'_id': id}, function () {
 			console.log('Removed item %s', id)
 			callback()
 		})
