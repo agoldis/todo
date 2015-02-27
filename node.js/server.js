@@ -14,7 +14,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
 
 console.log(__dirname);
-app.use(express.static(__dirname + '/../html'));
+app.use(express.static(__dirname + '/../public'));
 
 app.param('collectionName', function (req,res,next,collectionName) {
 	m.getItems(function (items) {
