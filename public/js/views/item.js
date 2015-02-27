@@ -9,7 +9,6 @@ define(['backbone','text!templates/item.html'], function (Backbone, itemTpl) {
             this.listenTo(this.model, 'change', this.render);
         },
         toggleCompleted: function () {
-            console.log('toggling completed')
             this.model.set('completed', !this.model.get('completed'));
             this.model.save({completed: this.model.get('completed')});
         },

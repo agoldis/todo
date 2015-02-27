@@ -22,7 +22,6 @@ require([
         'routers/router'
     ],
     function ($,Router) {
-        var ENTER_KEY = 13;
         $(function () {
             new Router()
         }());
