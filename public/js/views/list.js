@@ -1,10 +1,9 @@
-define(['backbone','views/item'], function (Backbone,ItemView) {
+define(['backbone','underscore','views/item'], function (Backbone,_,ItemView) {
     return Backbone.View.extend({
         tagName: 'ul',
         initialize: function () {
             this.collection.on('add', this.addItem, this);
-            this.collection.on('remove', this.removeItem, this)
-            // this.collection.on('reset', this.render, this)
+            this.collection.on('remove', this.removeItem, this);
             this.itemViews = []
         },
         addItem: function (item) {
@@ -13,12 +12,8 @@ define(['backbone','views/item'], function (Backbone,ItemView) {
             this.$el.append(newView.render().el);
         },
         removeItem: function (item) {
-            this.itemViews.forEach(function (view) {
-                if (view.model === item) {
-                    console.log('Removing %s view', item.get('title'))
-                    view.remove()
-                }
-            })
+            var i = _.indexOf(this.itemViews,item);
+            this.itemViews.splice(i,1);
         },
         render: function () {
             this.$el.html('');

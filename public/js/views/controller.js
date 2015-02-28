@@ -1,9 +1,11 @@
 define([
     'backbone',
+    'underscore',
     'models/item',
+    'views/status',
     'constants',
     'text!templates/control.html'
-], function (Backbone,ItemModel,constants,controlTpl) {
+], function (Backbone,_,ItemModel,StatusView,constants,controlTpl) {
     return Backbone.View.extend({
 
         template: _.template(controlTpl),
@@ -14,7 +16,8 @@ define([
             'keypress #item-title-input': 'addOnEnter'
         },
         initialize: function () {
-            this.createNewItem()
+            this.createNewItem();
+            this.statusView = new StatusView({collection: this.collection});
         },
         addOnEnter: function (e) {
             this.$('#item-title-input').parent().removeClass('has-error');
@@ -23,13 +26,11 @@ define([
         },
         addItem: function () {
             this.newItem.set('title',this.$('#item-title-input').val().trim());
+
             if(this.newItem.isValid()) {
                 this.collection.add(this.newItem);
                 this.newItem.save();
                 this.createNewItem();
-            }
-            else {
-                console.error(this.newItem.validationError);
             }
         },
         createNewItem: function () {
@@ -48,7 +49,7 @@ define([
         removeCompleted: function () {
             var completed = this.collection.where({completed: true});
             completed.map(function (item) {
-                console.log('going to destroy %s', item.get('title'))
+                console.log('destroy %s', item.get('title'))
                 item.destroy();
             });
         },
@@ -61,6 +62,7 @@ define([
         render: function () {
             var error_msg = this.newItem.validationError ? this.newItem.validationError : false;
             this.$el.html(this.template({error: error_msg}));
+            this.$el.find('#app-status').html(this.statusView.render().el);
             return this;
         }
     });

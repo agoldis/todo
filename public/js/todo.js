@@ -1,9 +1,9 @@
 require.config({
     baseUrl: "js",
     paths: {
-        'jquery' : '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery',
-        'underscore' : '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore',
-        'backbone' : '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone',
+        'jquery' : 'vendors/jquery',
+        'underscore' : 'vendors/underscore',
+        'backbone' : 'vendors/backbone',
         'text' : 'vendors/text',
         'templates' : '../templates'
     },

@@ -1,6 +1,5 @@
-<div class='btn-group' role='group'>
-    <button class="btn btn-default"  type="button" disabled='disabled'><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span></button>
-    <button class="btn btn-default"  type="button" id='show-all'>All (<%- overall %>)</button>
-    <button class="btn btn-default"  type="button" id='show-completed'>Completed (<%- completed %>)</button>
-    <button class="btn btn-default"  type="button" id='show-incompleted'>Incompleted (<%- others %>)</button>
+<div class='btn-group pull-right' role='group'>
+    <button class="btn btn-default"  type="button" id='show-all'>All (<span data-count="overall"></span>)</button>
+    <button class="btn btn-default"  type="button" id='show-completed'>Completed (<span data-count="completed"></span>)</button>
+    <button class="btn btn-default"  type="button" id='show-incompleted'>Incompleted (<span data-count="incompleted"></span>)</button>
 </div>

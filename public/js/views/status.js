@@ -1,7 +1,6 @@
-define(['backbone','text!templates/status.html'], function (Backbone,statusTpl) {
+define(['backbone','underscore','text!templates/status.html'], function (Backbone,_,statusTpl) {
     return Backbone.View.extend({
         template: _.template(statusTpl),
-        tagName: 'span',
         events: {
             'click #show-incompleted': function () {
                 this.model.set("show", "incompleted");
@@ -17,18 +16,18 @@ define(['backbone','text!templates/status.html'], function (Backbone,statusTpl) 
             this.model = new Backbone.Model();
             this.model.set("show", "all");
             this.listenTo(this.model, "change", this.filterCollection);
-            this.listenTo(this.collection, 'add', this.render);
-            this.listenTo(this.collection, 'remove', this.render);
-            this.listenTo(this.collection, 'change:completed', this.render);
+            this.listenTo(this.collection, 'add', this.renderCounters);
+            this.listenTo(this.collection, 'remove', this.renderCounters);
+            this.listenTo(this.collection, 'change:completed', this.filterCollection);
         },
         getStatus: function () {
             var overall = this.collection.length;
             var completed = this.collection.where({completed: true}).length;
-            var others = overall - completed;
+            var incompleted = overall - completed;
             return {
                 'overall': overall,
                 'completed': completed,
-                'others': others
+                'incompleted': incompleted
             };
         },
         filterCollection: function () {
@@ -44,12 +43,24 @@ define(['backbone','text!templates/status.html'], function (Backbone,statusTpl) 
                     item.set('isHidden', !item.get("completed"))
                 }
             });
-
+            this.render();
+        },
+        renderCounters: function () {
+            var status = this.getStatus();
+            this.$el.find('[data-count=completed]').html(status.completed);
+            this.$el.find('[data-count=incompleted]').html(status.incompleted);
+            this.$el.find('[data-count=overall]').html(status.overall);
         },
         render: function () {
-            this.$el.html(this.template(this.getStatus()));
-            this.$el.find("button").end().removeClass("active btn-info").find("#show-" + this.model.get("show")).addClass("active btn-info");
-            this.filterCollection();
+            console.log('status render')
+            this.$el.html(this.template());
+            this.renderCounters();
+            this.$el.find("button")
+                .end()
+                .removeClass("active btn-info")
+                .find("#show-" + this.model.get("show"))
+                .addClass("active btn-info");
+            this.delegateEvents();
             return this;
         }
     });
